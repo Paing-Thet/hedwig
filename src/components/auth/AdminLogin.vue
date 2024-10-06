@@ -6,22 +6,33 @@
         <input type="password" v-model="password" placeholder="Password" class="input" />
         <button type="submit" class="btn">Login</button>
       </form>
+      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     </div>
   </template>
   
   <script>
+  import { auth } from '../firebase/firebaseConfig';
+  import { signInWithEmailAndPassword } from 'firebase/auth';
+
   export default {
+
     data() {
       return {
         email: '',
         password: '',
+        errorMessage: '',
       };
     },
     methods: {
-      loginAdmin() {
-        // Placeholder for admin login logic
-        console.log("Admin login: ", this.email, this.password);
-      }
+      async loginAdmin() {
+        try {
+          await signInWithEmailAndPassword(auth, this.email, this.password);
+          this.$router.push('/admin/dashboard');
+        } 
+        catch (error) {
+          this.errorMessage = error.message;
+        }
+      },
     },
   };
   </script>

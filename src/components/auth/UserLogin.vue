@@ -1,27 +1,39 @@
 <template>
     <div class="login-page">
-      <h2 class="text-2xl font-bold">User Login</h2>
-      <form @submit.prevent="loginUser">
+      <img src="https://dev-paingthet.pantheonsite.io/wp-content/uploads/2024/10/b7777dce980a8abcb421ae488020ccbf.png" alt="">
+      <h2 class="text-2xl font-bold">Hedwig</h2>
+      <form @submit.prevent="loginUser" class="flex flex-col">
         <input type="email" v-model="email" placeholder="Email" class="input" />
         <input type="password" v-model="password" placeholder="Password" class="input" />
         <button type="submit" class="btn">Login</button>
       </form>
+      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     </div>
   </template>
   
   <script>
+  import { auth } from '../firebase/firebaseConfig';
+  import { signInWithEmailAndPassword } from 'firebase/auth';
+
   export default {
     data() {
       return {
         email: '',
         password: '',
+        errorMessage: '',
       };
     },
     methods: {
-      loginUser() {
-        // Placeholder for login logic
-        console.log("User login: ", this.email, this.password);
-      }
+      async loginUser() {
+        try {
+          await signInWithEmailAndPassword(auth, this.email, this.password);
+          alert("Login Success");
+          this.$router.push('/dashboard');
+        }
+        catch(error) {
+          this.errorMessage = error.message;
+        }
+      },
     },
   };
   </script>
@@ -31,6 +43,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+  .login-page img{
+    border-radius: 100px;
+    width: 200px;
   }
   .input {
     margin: 10px 0;
